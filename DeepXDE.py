@@ -302,4 +302,4 @@ def plot_results():
     print(f"  J2: {history['j2'][best_epoch]:.2e}")
     print(f"  J3: {history['j3'][best_epoch]:.2e}")
 
-plot_results()
+plot_results()  

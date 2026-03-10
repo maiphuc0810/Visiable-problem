@@ -12,14 +12,14 @@ from matplotlib.colors import LinearSegmentedColormap
 # =====================
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DOMAIN_LOW, DOMAIN_HIGH = 0.0, 4.0  # Miền [0,4] x [0,4]
-X_STAR = torch.tensor([0, 0], dtype=torch.float32, device=DEVICE)  # Điểm quan sát (0,0)
+X_STAR = torch.tensor([1.5, 3.5], dtype=torch.float32, device=DEVICE)  # Điểm quan sát (0,0)
 
 HIDDEN_SIZE = 128
 NUM_LAYERS = 4
 ACT_FUNCTION = nn.ELU()
 
 LR_INIT = 1e-3
-EPOCHS =10000 
+EPOCHS =2000 
 BATCH_SIZE = 2048
 EPS_INIT, EPS_FINAL = 0.1, 1e-4
 
