@@ -12,14 +12,14 @@ from matplotlib.colors import LinearSegmentedColormap
 # =====================
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DOMAIN_LOW, DOMAIN_HIGH = 0.0, 4.0  # Miền [0,4] x [0,4]
-X_STAR = torch.tensor([2, 2], dtype=torch.float32, device=DEVICE)  # Test với x* trong vật cản
+X_STAR = torch.tensor([1,2], dtype=torch.float32, device=DEVICE)  # Test với x* trong vật cản
 
 HIDDEN_SIZE = 128
 NUM_LAYERS = 4
-ACT_FUNCTION = nn.Tanh()
+ACT_FUNCTION = nn.Sigmoid()
 
 LR_INIT = 1e-3
-EPOCHS = 5000
+EPOCHS = 1000 
 BATCH_SIZE = 2048
 EPS_INIT, EPS_FINAL = 0.1, 1e-4
 
@@ -275,14 +275,8 @@ def plot_results(model, history):
 # -----------------------------------------------------------------------------
 def main():
     # Vật cản hình tròn tâm (2,2) bán kính 1
-    centers =torch.tensor([
-        [2.5, 2.5] ,  # Hình tròn 1: tâm (1.5, 1.5)
-        [2.5, 1.5],  # Hình tròn 2: tâm (2.5, 2.5)    
-    ], device=DEVICE)
-    radii = torch.tensor([
-        1,  # Bán kính hình 1
-        0.5,  # Bán kính hình 2
-    ], device=DEVICE)
+    centers = torch.tensor([[2.0, 2.0]], device=DEVICE)
+    radii = torch.tensor([1.0], device=DEVICE)
     
     model = VisibilityNet2D(centers, radii).to(DEVICE)
     optimizer = optim.Adam(model.parameters(), lr=LR_INIT)
@@ -303,7 +297,7 @@ def main():
         
         optimizer.zero_grad()
         j1, j2, j3 = compute_losses(model, X1, X2, X3, eps)
-        loss = j1 + j2 + j3  # Điều chỉnh weights
+        loss = j1 + 0.5*j2 + j3  # Điều chỉnh weights
         loss.backward()
         optimizer.step()
 
