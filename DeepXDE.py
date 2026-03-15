@@ -257,7 +257,7 @@ def plot_results():
     ax.set_ylim(0, 4)
     ax.set_xlabel('x1')
     ax.set_ylabel('x2')
-    ax.set_title('Trial Solution (DeepXDE + Importance Sampling)', fontsize=14, fontweight='bold')
+    ax.set_title('DeepXDE epoch= 10000', fontsize=14, fontweight='bold')
     ax.legend(loc='upper right')
     ax.set_aspect('equal')
     ax.grid(True, alpha=0.2)
