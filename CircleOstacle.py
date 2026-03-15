@@ -16,6 +16,7 @@ X_STAR = torch.tensor([0,0 ], dtype=torch.float32, device=DEVICE)  # Điểm qua
 
 HIDDEN_SIZE = 128  # Số node trong lớp ẩn
 NUM_LAYERS = 4     # Số lớp của mạng nơ-ron
+<<<<<<<< HEAD:CircleOstacle .py
 ACT_FUNCTION = nn.ELU()  # Hàm kích hoạt
 
 LR_INIT = 1e-3      # Learning rate ban đầu (lambda)
@@ -26,6 +27,18 @@ EPS_INIT, EPS_FINAL  = 0.1, 1e-4
 
 # =====================
 # ĐỊNH NGHĨA HÀM VẬT CẢN φ(x) - (Obstacle function) 
+========
+ACT_FUNCTION = nn.Tanh()  # Hàm kích hoạt
+
+LR_INIT = 1e-3      # Learning rate ban đầu (lambda)
+EPOCHS = 5000       # Số vòng lặp huấn luyện
+BATCH_SIZE = 2048   # Số mẫu Monte Carlo mỗi batch (M)
+EPS_INIT, EPS_FINAL  = 0.1, 1e-4  
+# Dung sai εn - giảm dần từ 0.1 xuống 0.0001 (epsilon)
+
+# =====================
+# ĐỊNH NGHĨA HÀM VẬT CẢN φ(x) - (Obstacle function)
+>>>>>>>> 29486c2c6205bdcb7e4a24b54e6cb80c6dd95ee9:circle.py
 # ===================== 
 def sdf_circles(xy, centers, radii):
     """
