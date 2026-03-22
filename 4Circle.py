@@ -11,18 +11,21 @@ from matplotlib.colors import LinearSegmentedColormap
 # CẤU HÌNH & SIÊU THAM SỐ
 # =====================
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-DOMAIN_LOW, DOMAIN_HIGH = 0.0, 4.0  # Miền tính toán [0,4] x [0,4]
-X_STAR = torch.tensor([0,0 ], dtype=torch.float32, device=DEVICE)  # Điểm quan sát (1.5,3.5) - nằm trong vật cản
+DOMAIN_LOW, DOMAIN_HIGH = 0.0, 5.0  # Miền tính toán [0,8] x [0,8]
+X_STAR = torch.tensor([1.5,1.5], dtype=torch.float32, device=DEVICE)  # Điểm quan sát (1.5,3.5) - nằm trong vật cản
 
 HIDDEN_SIZE = 128  # Số node trong lớp ẩn
 NUM_LAYERS = 4     # Số lớp của mạng nơ-ron
-ACT_FUNCTION = nn.Tanh()  # Hàm kích hoạt
+ACT_FUNCTION = nn.ELU()  # Hàm kích hoạt
+
 LR_INIT = 1e-3      # Learning rate ban đầu (lambda)
-EPOCHS = 3000       # Số vòng lặp huấn luyện
+EPOCHS = 500     # Số vòng lặp huấn luyện
 BATCH_SIZE = 2048   # Số mẫu Monte Carlo mỗi batch (M)
 EPS_INIT, EPS_FINAL  = 0.1, 1e-4  
-# ĐỊNH NGHĨA HÀM VẬT CẢN φ(x) - (Obstacle function)
+# Dung sai εn - giảm dần từ 0.1 xuốngs 0.0001 (epsilon)
 
+# =====================
+# ĐỊNH NGHĨA HÀM VẬT CẢN φ(x) - (Obstacle function)
 # ===================== 
 def sdf_circles(xy, centers, radii):
     """
@@ -156,8 +159,8 @@ def compute_losses(model, X1, X2, X3, eps):
 def plot_results(model, history):
     """Vẽ nghiệm thử và lịch sử huấn luyện"""
     grid = 300
-    x = torch.linspace(0, 4, grid, device=DEVICE)
-    y = torch.linspace(0, 4, grid, device=DEVICE)
+    x = torch.linspace(0, 8, grid, device=DEVICE)
+    y = torch.linspace(0, 8, grid, device=DEVICE)
     X, Y = torch.meshgrid(x, y, indexing='ij')
     XY = torch.stack([X.ravel(), Y.ravel()], dim=1)
 
@@ -249,14 +252,17 @@ def plot_results(model, history):
 # Tương ứng với vòng lặp chính dòng 4-17 trong Algorithm 1
 # -----------------------------------------------------------------------------
 def main():
-    # Định nghĩa vật cản: hình tròn tâm (2,2) bán kính 1
     centers =torch.tensor([
-        [2.5, 2.5] ,  # Hình tròn 1: tâm (1.5, 1.5)
-        [2.5, 1.5],  # Hình tròn 2: tâm (2.5, 2.5)    
+        [3, 3],  #
+        [3, 1.8],
+        [0.8, 0.5] ,
+        [1,3],
     ], device=DEVICE)
     radii = torch.tensor([
-        1,  # Bán kính hình 1
-        0.5,  # Bán kính hình 2
+        1,  
+        0.5,
+        0.3,
+        0.6,  
     ], device=DEVICE)
     
     # Khởi tạo mạng với tham số ban đầu θ₀ (dòng 1-2)
@@ -269,7 +275,7 @@ def main():
     print(f"Training on {DEVICE}...")
     print(f"Obstacle: Circle at (2, 2) with radius 1")
     print(f"Observer at {X_STAR.cpu().numpy()}")
-    print(f"Domain: [0,4] × [0,4]")
+    print(f"Domain: [0,8] × [0,8]")
     print("-" * 50)
     
     # Biến để lưu giá trị tốt nhất
